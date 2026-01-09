@@ -1,0 +1,1479 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hobbs House Bakery – Product Balance Framework</title>
+
+  <!-- Brand: tweak these if you want -->
+  <style>
+    :root{
+      --bg:#0b0f14;
+      --card:#101824;
+      --muted:#9db0c6;
+      --text:#eef4fb;
+      --line:#223349;
+
+      /* Hobbs orange vibe */
+      --brand:#f26a21;
+      --brand2:#ff8a3d;
+      --brand3:#ffb27a;
+
+      --good:#59d18a;
+      --warn:#ffd166;
+      --bad:#ff6b6b;
+
+      --shadow: 0 14px 55px rgba(0,0,0,.45);
+      --radius: 18px;
+    }
+
+    *{ box-sizing:border-box }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 700px at 15% 8%, rgba(242,106,33,.30) 0%, transparent 55%),
+        radial-gradient(1000px 650px at 90% 10%, rgba(255,138,61,.18) 0%, transparent 50%),
+        radial-gradient(900px 600px at 70% 85%, rgba(255,178,122,.10) 0%, transparent 55%),
+        var(--bg);
+    }
+
+    header{
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 26px 18px 10px;
+      display:flex;
+      gap:14px;
+      align-items:flex-end;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+
+    .brandBlock{
+      display:flex;
+      align-items:flex-end;
+      gap:14px;
+    }
+
+    .mark{
+      width: 170px;
+      height: auto;
+      max-height: 52px;
+      object-fit: contain;
+      filter: drop-shadow(0 10px 22px rgba(0,0,0,.35));
+    }
+    @media (max-width: 520px){
+      .mark{ width: 150px; }
+    }
+
+    h1{
+      margin:0;
+      font-size: 20px;
+      letter-spacing: .2px;
+    }
+    header p{
+      margin:4px 0 0 0;
+      color: var(--muted);
+      max-width: 88ch;
+      line-height: 1.45;
+      font-size: 13px;
+    }
+
+    .topActions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:flex-end;
+    }
+
+    .wrap{
+      max-width:1200px;
+      margin:0 auto;
+      padding: 12px 18px 46px;
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    @media (min-width: 1040px){
+      .wrap{
+        grid-template-columns: 460px 1fr;
+        align-items:start;
+      }
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .card h2{
+      margin:0 0 10px 0;
+      font-size: 15px;
+      color:#ffe7d7;
+      letter-spacing:.2px;
+    }
+
+    .tabs{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .tab{
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(0,0,0,.10);
+      color: var(--text);
+      padding: 9px 12px;
+      border-radius: 999px;
+      cursor:pointer;
+      font-weight: 650;
+      font-size: 13px;
+    }
+    .tab.active{
+      border-color: rgba(242,106,33,.65);
+      background: rgba(242,106,33,.16);
+      box-shadow: 0 10px 30px rgba(242,106,33,.12);
+    }
+
+    label{
+      display:block;
+      font-size: 12px;
+      color: var(--muted);
+      margin: 12px 0 6px;
+    }
+
+    input[type="text"], textarea, select{
+      width:100%;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      color: var(--text);
+      padding: 10px 12px;
+      outline:none;
+      font-size: 13px;
+    }
+    textarea{ min-height: 80px; resize: vertical; }
+
+    .row{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+    }
+    .row .value{
+      width: 34px;
+      text-align:right;
+      font-variant-numeric: tabular-nums;
+      color:#ffe7d7;
+      font-weight:700;
+    }
+    input[type="range"]{
+      width:100%;
+      accent-color: var(--brand);
+    }
+
+    .hint{
+      margin-top: 6px;
+      font-size: 12px;
+      color: rgba(157,176,198,.95);
+      line-height: 1.35;
+    }
+
+    .divider{
+      height: 1px;
+      background: rgba(255,255,255,.09);
+      margin: 12px 0;
+    }
+
+    .btn{
+      border:0;
+      padding: 10px 12px;
+      border-radius: 14px;
+      cursor:pointer;
+      font-weight: 700;
+      font-size: 13px;
+    }
+    .btn.primary{
+      background: linear-gradient(135deg, var(--brand) 0%, var(--brand2) 60%, var(--brand3) 100%);
+      color:#1b0b02;
+      box-shadow: 0 12px 28px rgba(242,106,33,.22);
+    }
+    .btn.ghost{
+      background: transparent;
+      border: 1px solid rgba(255,255,255,.18);
+      color: var(--text);
+    }
+    .btn.small{
+      padding: 8px 10px;
+      font-size: 12px;
+      border-radius: 12px;
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top: 12px;
+    }
+
+    .gridRight{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .chartWrap{
+      padding: 10px 12px 14px;
+    }
+    canvas{ width:100% !important; height: 380px !important; }
+
+    .chips{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+    .chip{
+      font-size:12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.14);
+      color: #ffe7d7;
+    }
+    .chip.good{ border-color: rgba(89,209,138,.55); color: #c6f3da; }
+    .chip.warn{ border-color: rgba(255,209,102,.55); color: #ffecc2; }
+    .chip.bad{ border-color: rgba(255,107,107,.60); color: #ffd5d5; }
+
+    .out h3{
+      margin: 0 0 8px 0;
+      font-size: 13px;
+      color:#ffe7d7;
+    }
+    .out p, .out li{
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: 13px;
+    }
+    .out ul{ margin: 8px 0 0 18px; }
+
+    .twoCol{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    @media (min-width: 1040px){
+      .twoCol{ grid-template-columns: 1fr 1fr; }
+    }
+
+    .miniTitle{
+      font-size: 12px;
+      color: rgba(255,231,215,.9);
+      font-weight: 750;
+      letter-spacing: .2px;
+      margin-bottom: 4px;
+    }
+
+    .footerNote{
+      margin-top: 10px;
+      font-size: 12px;
+      color: rgba(157,176,198,.92);
+    }
+
+    .hidden{ display:none !important; }
+
+    /* Print-friendly for PDF export */
+    @media print{
+      body{ background: #fff; color:#000; }
+      .card{ box-shadow:none; }
+      .btn, .tabs, .topActions{ display:none !important; }
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="brandBlock">
+    <img class="mark" src="data:image/png;base64,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" alt="Hobbs House Bakery" />
+    <div>
+      <h1>Hobbs House Bakery – Product Balance Framework</h1>
+      <p>Score a product across five lenses, apply the Brand Gate, and generate a spider chart plus plain-English next steps. This is a decision lens, not a nutrition claims tool.</p>
+    </div>
+  </div>
+
+  <div class="topActions">
+    <button class="btn ghost small" id="btnSaveLocal">Save</button>
+    <button class="btn ghost small" id="btnLoadLocal">Load</button>
+    <button class="btn ghost small" id="btnExportJSON">Export JSON</button>
+    <button class="btn ghost small" id="btnImportJSON">Import JSON</button>
+    <input type="file" id="jsonFile" accept="application/json" class="hidden" />
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- LEFT: Inputs -->
+  <section class="card" aria-label="Inputs">
+    <div class="tabs" role="tablist" aria-label="Mode">
+      <button class="tab active" id="tabSingle" role="tab" aria-selected="true">Single product</button>
+      <button class="tab" id="tabCompare" role="tab" aria-selected="false">Compare two products</button>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="row">
+      <div style="flex:1">
+        <label for="productType">Product type</label>
+        <select id="productType">
+          <option value="retail_loaf">Retail loaf</option>
+          <option value="hospitality_bun">Hospitality bun / roll</option>
+          <option value="reseller_line">Reseller line</option>
+          <option value="sweet">Sweet / confectionery</option>
+          <option value="other">Other</option>
+        </select>
+        <div class="hint">This changes the “next steps” guidance to suit what the product is meant to do.</div>
+      </div>
+    </div>
+
+    <div id="singleInputs">
+      <label for="productName">Product name</label>
+      <input id="productName" type="text" placeholder="e.g. Ultimate Burger Bun (clean label)" />
+
+      <label for="strategicRole">Strategic role</label>
+      <select id="strategicRole">
+        <option value="flagship">Flagship (sets the standard)</option>
+        <option value="core">Core range</option>
+        <option value="customer_specific">Customer-specific / bespoke</option>
+        <option value="commercial_enabler">Commercial enabler (volume / margin support)</option>
+        <option value="legacy_review">Legacy (keep under review)</option>
+      </select>
+      <div class="hint">Helps us see the portfolio, not just the product.</div>
+
+      <label for="decision">Decision</label>
+      <select id="decision">
+        <option value="proceed">Proceed as is</option>
+        <option value="proceed_conditions">Proceed with conditions</option>
+        <option value="rework">Rework</option>
+        <option value="park">Park / say no (for now)</option>
+      </select>
+
+      <label for="direction">Direction of travel</label>
+      <select id="direction">
+        <option value="improving">Improving</option>
+        <option value="stable">Stable</option>
+        <option value="declining">Declining</option>
+      </select>
+      
+<div class="hint">
+<strong>What this means:</strong> Compared to where this product was 12–24 months ago, are we intentionally moving it closer to our view of good food — or not?<br><br>
+<strong>Improving</strong> = specific changes already made or agreed (not just hoped for).<br>
+<strong>Stable</strong> = deliberately held as it is, for a clear reason.<br>
+<strong>Declining</strong> = a known compromise or legacy product we’re not investing further in.<br><br>
+Choose based on <em>actions taken or agreed</em>, not aspirations.
+</div>
+
+
+      <div class="divider"></div>
+
+      <label for="ingredients">Ingredients (at time of review)</label>
+      <textarea id="ingredients" placeholder="Keep it simple. e.g. Wheat flour, water, butter, yeast, sugar, salt"></textarea>
+      <div class="hint">This isn’t a legal label — it’s a record so the PDF makes sense later.</div>
+
+      <label for="processNotes">Process notes (one line)</label>
+      <input id="processNotes" type="text" placeholder="e.g. straight dough / overnight ferment / sourdough 24h bulk" />
+
+      <div class="divider"></div>
+
+      <label>Benchmark overlay</label>
+      <div class="row" style="gap:12px; align-items:flex-start;">
+        <div style="flex:1">
+          <label style="margin:0; color: var(--muted); font-size:12px;">
+            <input id="showBenchmark" type="checkbox" style="transform: translateY(1px);" />
+            Show “Best of Hobbs House Bakery” overlay
+          </label>
+          <div class="hint">A reference profile to anchor standards (edit if you want).</div>
+        </div>
+      </div>
+
+      <div id="benchmarkFields" class="hidden">
+        <div class="twoCol">
+          <div>
+            <label>Benchmark scores (1–5)</label>
+            <div class="row"><span style="width:95px; color:var(--muted); font-size:12px;">Customer</span><input id="bmkCustomer" type="range" min="1" max="5" step="1" value="5" /><div class="value" id="vbmkCustomer">5</div></div>
+            <div class="row"><span style="width:95px; color:var(--muted); font-size:12px;">Operational</span><input id="bmkOperational" type="range" min="1" max="5" step="1" value="5" /><div class="value" id="vbmkOperational">5</div></div>
+            <div class="row"><span style="width:95px; color:var(--muted); font-size:12px;">Quality</span><input id="bmkQuality" type="range" min="1" max="5" step="1" value="5" /><div class="value" id="vbmkQuality">5</div></div>
+            <div class="row"><span style="width:95px; color:var(--muted); font-size:12px;">Resource</span><input id="bmkResource" type="range" min="1" max="5" step="1" value="5" /><div class="value" id="vbmkResource">5</div></div>
+            <div class="row"><span style="width:95px; color:var(--muted); font-size:12px;">Commercial</span><input id="bmkCommercial" type="range" min="1" max="5" step="1" value="5" /><div class="value" id="vbmkCommercial">5</div></div>
+          </div>
+          <div>
+            <label for="benchmarkName">Benchmark name</label>
+            <input id="benchmarkName" type="text" value="Best of Hobbs House Bakery" />
+            <div class="hint">If you want this to be a specific product (e.g. a flagship sourdough), name it here.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+
+      <label>1) Customer Need & Insight</label>
+      <div class="row">
+        <input id="sCustomer" type="range" min="1" max="5" step="1" value="3" />
+        <div class="value" id="vCustomer">3</div>
+      </div>
+      <div class="hint">Is the need clear and real? Are we solving a problem or chasing noise?</div>
+
+      <label>2) Operational Fit</label>
+      <div class="row">
+        <input id="sOperational" type="range" min="1" max="5" step="1" value="3" />
+        <div class="value" id="vOperational">3</div>
+      </div>
+      <div class="hint">Can we make it well and consistently? Does it flow through the bakery?</div>
+
+      <label>3) Food Quality & Digestibility</label>
+      <div class="row">
+        <input id="sQuality" type="range" min="1" max="5" step="1" value="3" />
+        <div class="value" id="vQuality">3</div>
+      </div>
+      <div class="hint">Fermentation time/method, wholegrain diversity, fats used, degree of processing (directional).</div>
+
+      <label>4) Resource Impact</label>
+      <div class="row">
+        <input id="sResource" type="range" min="1" max="5" step="1" value="3" />
+        <div class="value" id="vResource">3</div>
+      </div>
+      <div class="hint">Packaging necessity/type, shelf life vs waste, ingredient efficiency.</div>
+
+      <label>5) Commercial Strength</label>
+      <div class="row">
+        <input id="sCommercial" type="range" min="1" max="5" step="1" value="3" />
+        <div class="value" id="vCommercial">3</div>
+      </div>
+      <div class="hint">Margin relative to effort, cost volatility, scalability.</div>
+
+      <div class="divider"></div>
+
+      <label for="brandGate">Brand Gate: would we happily explain this product to a customer, face-to-face?</label>
+      <select id="brandGate">
+        <option value="yes">Yes – proud to put our name to it</option>
+        <option value="conditions">Yes – with conditions (needs tweaks)</option>
+        <option value="no">No – not something we’d stand behind</option>
+      </select>
+
+      <label for="conditions">Conditions / required changes (if any)</label>
+      <textarea id="conditions" placeholder="e.g. Swap palm, longer ferment, simplify packaging, improve spec, etc."></textarea>
+
+      <label for="notes">Notes (brief, story, customer context)</label>
+      <textarea id="notes" placeholder="Anything useful: customer brief, target use case, operational constraints, etc."></textarea>
+
+      <div class="actions">
+        <button class="btn primary" id="btnGenerate">Generate chart & insights</button>
+        <button class="btn ghost" id="btnReset">Reset</button>
+      </div>
+
+      <div class="footerNote">Scoring guide: 1 = weak, 3 = acceptable, 5 = genuinely strong.</div>
+    </div>
+
+    <div id="compareInputs" class="hidden">
+      <div class="twoCol">
+        <div>
+          <div class="miniTitle">Product A</div>
+          <label for="nameA">Name</label>
+          <input id="nameA" type="text" placeholder="e.g. Bun A (current)" />
+
+          <label>Customer Need & Insight</label>
+          <div class="row">
+            <input id="aCustomer" type="range" min="1" max="5" step="1" value="3" />
+            <div class="value" id="vaCustomer">3</div>
+          </div>
+
+          <label>Operational Fit</label>
+          <div class="row">
+            <input id="aOperational" type="range" min="1" max="5" step="1" value="3" />
+            <div class="value" id="vaOperational">3</div>
+          </div>
+
+          <label>Food Quality & Digestibility</label>
+          <div class="row">
+            <input id="aQuality" type="range" min="1" max="5" step="1" value="3" />
+            <div class="value" id="vaQuality">3</div>
+          </div>
+
+          <label>Resource Impact</label>
+          <div class="row">
+            <input id="aResource" type="range" min="1" max="5" step="1" value="3" />
+            <div class="value" id="vaResource">3</div>
+          </div>
+
+          <label>Commercial Strength</label>
+          <div class="row">
+            <input id="aCommercial" type="range" min="1" max="5" step="1" value="3" />
+            <div class="value" id="vaCommercial">3</div>
+          </div>
+
+          <label>Brand Gate</label>
+          <select id="aBrand">
+            <option value="yes">Yes</option>
+            <option value="conditions">Yes (conditions)</option>
+            <option value="no">No</option>
+          </select>
+
+          <label>Notes</label>
+          <textarea id="aNotes" placeholder="Brief notes for A"></textarea>
+        </div>
+
+        <div>
+          <div class="miniTitle">Product B</div>
+          <label for="nameB">Name</label>
+          <input id="nameB" type="text" placeholder="e.g. Bun B (clean label + longer ferment)" />
+
+          <label>Customer Need & Insight</label>
+          <div class="row">
+            <input id="bCustomer" type="range" min="1" max="5" step="1" value="3" />
+            <div class="value" id="vbCustomer">3</div>
+          </div>
+
+          <label>Operational Fit</label>
+          <div class="row">
+            <input id="bOperational" type="range" min="1" max="5" step="1" value="3" />
+            <div class="value" id="vbOperational">3</div>
+          </div>
+
+          <label>Food Quality & Digestibility</label>
+          <div class="row">
+            <input id="bQuality" type="range" min="1" max="5" step="1" value="3" />
+            <div class="value" id="vbQuality">3</div>
+          </div>
+
+          <label>Resource Impact</label>
+          <div class="row">
+            <input id="bResource" type="range" min="1" max="5" step="1" value="3" />
+            <div class="value" id="vbResource">3</div>
+          </div>
+
+          <label>Commercial Strength</label>
+          <div class="row">
+            <input id="bCommercial" type="range" min="1" max="5" step="1" value="3" />
+            <div class="value" id="vbCommercial">3</div>
+          </div>
+
+          <label>Brand Gate</label>
+          <select id="bBrand">
+            <option value="yes">Yes</option>
+            <option value="conditions">Yes (conditions)</option>
+            <option value="no">No</option>
+          </select>
+
+          <label>Notes</label>
+          <textarea id="bNotes" placeholder="Brief notes for B"></textarea>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn primary" id="btnGenerateCompare">Generate comparison</button>
+        <button class="btn ghost" id="btnResetCompare">Reset</button>
+      </div>
+
+      <div class="footerNote">Tip: Use Compare to show “before/after” recipe changes (e.g. Everyday bread update, bun clean-label update).</div>
+    </div>
+  </section>
+
+  <!-- RIGHT: Outputs -->
+  <section class="gridRight">
+    <section class="card chartWrap" aria-label="Chart">
+      <div class="row" style="justify-content:space-between; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0;">Spider chart</h2>
+        <div class="actions" style="margin:0;">
+          <button class="btn ghost small" id="btnPNG">Download PNG</button>
+          <button class="btn ghost small" id="btnPDF">Download PDF</button>
+        </div>
+      </div>
+
+      <div id="exportArea">
+        <canvas id="radarChart"></canvas>
+        <div class="chips" id="chips"></div>
+      </div>
+    </section>
+
+    <section class="card out" aria-label="Insights">
+      <h2>What this tells us</h2>
+      <div id="summary"></div>
+
+      <div class="divider"></div>
+
+      <h2>Suggested next steps</h2>
+      <div id="actions"></div>
+
+      <div class="divider"></div>
+
+      <h2>Scores</h2>
+      <div id="scoreTable"></div>
+    </section>
+
+    <section class="card out" aria-label="Notes">
+      <h2>Notes for the record</h2>
+      <div id="notesOut"></div>
+    </section>
+  </section>
+</main>
+
+<!-- Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+<script>
+  // ---------- Utilities ----------
+  const byId = (id) => document.getElementById(id);
+
+  // ---------- Dependency check ----------
+  function depsOk(){
+    const missing = [];
+    if(typeof Chart === "undefined") missing.push("Chart.js");
+    if(typeof html2canvas === "undefined") missing.push("html2canvas");
+    if(!window.jspdf || !window.jspdf.jsPDF) missing.push("jsPDF");
+    return missing;
+  }
+
+  function showDepError(missing){
+    const msg = document.createElement("div");
+    msg.style.marginTop = "10px";
+    msg.style.padding = "10px 12px";
+    msg.style.borderRadius = "12px";
+    msg.style.border = "1px solid rgba(255,107,107,.55)";
+    msg.style.background = "rgba(255,107,107,.12)";
+    msg.style.color = "#ffd5d5";
+    msg.style.fontSize = "12.5px";
+    msg.innerHTML = `<strong>Heads up:</strong> Some libraries didn't load (${missing.join(", ")}). 
+      This is usually a network/CDN block. The page will still show the form, but charts/exports may not work.
+      <br><br><strong>Fix:</strong> either allow access to cdn.jsdelivr.net, or ask for the offline (no-CDN) build.`;
+    const chartCard = document.querySelector('[aria-label="Chart"]');
+    if(chartCard) chartCard.appendChild(msg);
+
+    // Disable export buttons if needed
+    if(missing.length){
+      const b1 = document.getElementById("btnPNG");
+      const b2 = document.getElementById("btnPDF");
+      if(b1) b1.disabled = true;
+      if(b2) b2.disabled = true;
+    }
+  }
+
+  function classifyScore(n){
+    if(n >= 4) return "strong";
+    if(n === 3) return "ok";
+    return "weak";
+  }
+
+  function brandGateLabel(v){
+    return v === "yes" ? "Yes" : (v === "no" ? "No" : "Yes (conditions)");
+  }
+
+  function decisionLabel(v){
+    return v === "proceed" ? "Proceed" : (v === "proceed_conditions" ? "Proceed (conditions)" : (v === "rework" ? "Rework" : "Park / say no"));
+  }
+
+  function directionLabel(v){
+    return v === "improving" ? "Improving" : (v === "declining" ? "Declining" : "Stable");
+  }
+
+  function roleLabel(v){
+    return v === "flagship" ? "Flagship" : (v === "core" ? "Core" : (v === "customer_specific" ? "Customer-specific" : (v === "commercial_enabler" ? "Commercial enabler" : "Legacy / review")));
+  }
+
+  // Product-type nudges (keeps recommendations grounded)
+  const typeGuidance = {
+    retail_loaf: {
+      focus: "Retail loaf focus: repeatable quality, clear story, and ‘quiet differentiators’ (fermentation time / grains) without making health claims.",
+      extra: [
+        "If it’s a core loaf, aim for consistency first; then improve quality/digestibility directionally.",
+        "Make sure the customer benefit is easy to explain in one sentence (taste, keeping quality, digestibility, craft)."
+      ]
+    },
+    hospitality_bun: {
+      focus: "Hospitality bun focus: performance and customer brief come first (softness, slicing, freeze/thaw). Improve ‘clean label’ and fermentation directionally without changing the role of the product.",
+      extra: [
+        "Keep the bun doing its job (soft, reliable, holds fillings). Improve ingredients/process around that.",
+        "Aim for ‘better not different’: longer ferment, cleaner fats, tidy-up list, but maintain texture."
+      ]
+    },
+    reseller_line: {
+      focus: "Reseller line focus: shelf life / packaging / waste and a simple range that sells. Improvements should be obvious and repeatable.",
+      extra: [
+        "Prioritise products that tell a clear story and rotate well; avoid range bloat.",
+        "Optimise pack formats and shelf life to reduce returns and waste."
+      ]
+    },
+    sweet: {
+      focus: "Sweet / confectionery focus: customer joy and quality first. Be intentional about ingredients and processing, without pretending it’s a health product.",
+      extra: [
+        "Keep claims honest: lead with craft, ingredients and indulgence, not ‘healthy’.",
+        "Where appropriate, tidy-up oils and additives, but don’t compromise the eating experience."
+      ]
+    },
+    other: {
+      focus: "General focus: be clear what the product is meant to do, then improve it directionally without overcomplicating it.",
+      extra: [
+        "If the brief is vague, fix that first (who is it for, why does it exist?).",
+        "Choose one improvement at a time so changes are understood and repeatable."
+      ]
+    }
+  };
+
+  // ---------- Slider readouts ----------
+  const singleSliders = [
+    ["sCustomer","vCustomer"], ["sOperational","vOperational"], ["sQuality","vQuality"], ["sResource","vResource"], ["sCommercial","vCommercial"]
+  ];
+  singleSliders.forEach(([s,o]) => {
+    byId(s).addEventListener("input", () => byId(o).textContent = byId(s).value);
+    byId(o).textContent = byId(s).value;
+  });
+
+
+  // Benchmark sliders + toggle
+  const bmkSliders = [
+    ["bmkCustomer","vbmkCustomer"], ["bmkOperational","vbmkOperational"], ["bmkQuality","vbmkQuality"], ["bmkResource","vbmkResource"], ["bmkCommercial","vbmkCommercial"]
+  ];
+  bmkSliders.forEach(([s,o]) => {
+    const el = byId(s);
+    if(!el) return;
+    el.addEventListener("input", () => byId(o).textContent = el.value);
+    byId(o).textContent = el.value;
+  });
+
+  function syncBenchmarkVisibility(){
+    const cb = byId("showBenchmark");
+    const box = byId("benchmarkFields");
+    if(!cb || !box) return;
+    box.classList.toggle("hidden", !cb.checked);
+  }
+  if(byId("showBenchmark")){
+    byId("showBenchmark").addEventListener("change", () => {
+      syncBenchmarkVisibility();
+      if(mode === "single") renderSingle();
+    });
+    syncBenchmarkVisibility();
+  }
+
+  const compareSliders = [
+    ["aCustomer","vaCustomer"], ["aOperational","vaOperational"], ["aQuality","vaQuality"], ["aResource","vaResource"], ["aCommercial","vaCommercial"],
+    ["bCustomer","vbCustomer"], ["bOperational","vbOperational"], ["bQuality","vbQuality"], ["bResource","vbResource"], ["bCommercial","vbCommercial"]
+  ];
+  compareSliders.forEach(([s,o]) => {
+    byId(s).addEventListener("input", () => byId(o).textContent = byId(s).value);
+    byId(o).textContent = byId(s).value;
+  });
+
+  // ---------- Chart ----------
+  const ctx = byId("radarChart");
+  let chart;
+
+  
+  function buildChartSingle(data){
+    const labels = ["Customer","Operational","Quality","Resource","Commercial"];
+    const values = [data.customer, data.operational, data.quality, data.resource, data.commercial];
+
+    const datasets = [{
+      label: data.productName || "Product profile",
+      data: values,
+      borderWidth: 2,
+      pointRadius: 3,
+      fill: true
+    }];
+
+    // Optional benchmark overlay
+    if(data.showBenchmark){
+      datasets.push({
+        label: data.benchmarkName || "Best of Hobbs House Bakery",
+        data: [data.bmkCustomer, data.bmkOperational, data.bmkQuality, data.bmkResource, data.bmkCommercial],
+        borderWidth: 2,
+        pointRadius: 2,
+        fill: false,
+        borderDash: [6, 4]
+      });
+    }
+
+    if(chart) chart.destroy();
+
+    chart = new Chart(ctx, {
+      type:"radar",
+      data:{
+        labels,
+        datasets
+      },
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        scales:{
+          r:{
+            min:0, max:5,
+            ticks:{ stepSize:1, showLabelBackdrop:false },
+            grid:{ circular:true }
+          }
+        },
+        plugins:{ legend:{ display:true } }
+      }
+    });
+  }
+
+  function buildChartCompare(a,b){
+
+    const labels = ["Customer","Operational","Quality","Resource","Commercial"];
+    if(chart) chart.destroy();
+
+    chart = new Chart(ctx, {
+      type:"radar",
+      data:{
+        labels,
+        datasets:[
+          { label: a.name || "Product A", data: [a.customer,a.operational,a.quality,a.resource,a.commercial], borderWidth:2, pointRadius:3, fill:false },
+          { label: b.name || "Product B", data: [b.customer,b.operational,b.quality,b.resource,b.commercial], borderWidth:2, pointRadius:3, fill:false }
+        ]
+      },
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        scales:{ r:{ min:0, max:5, ticks:{ stepSize:1, showLabelBackdrop:false }, grid:{ circular:true } } },
+        plugins:{ legend:{ display:true } }
+      }
+    });
+  }
+
+  // ---------- Chips + tables ----------
+  function renderChipsSingle(data){
+    const chipWrap = byId("chips");
+    chipWrap.innerHTML = "";
+
+    const items = [
+      ["Customer", data.customer],
+      ["Operational", data.operational],
+      ["Quality", data.quality],
+      ["Resource", data.resource],
+      ["Commercial", data.commercial]
+    ];
+
+    items.forEach(([name, val]) => {
+      const c = classifyScore(val);
+      const chip = document.createElement("div");
+      chip.className = "chip " + (c==="strong" ? "good" : (c==="weak" ? "bad" : "warn"));
+      chip.textContent = `${name}: ${val}/5`;
+      chipWrap.appendChild(chip);
+    });
+
+    const gateChip = document.createElement("div");
+    gateChip.className = "chip " + (data.brandGate==="yes" ? "good" : (data.brandGate==="no" ? "bad" : "warn"));
+    gateChip.textContent = `Brand Gate: ${brandGateLabel(data.brandGate)}`;
+    chipWrap.appendChild(gateChip);
+
+    const decChip = document.createElement("div");
+    decChip.className = "chip";
+    decChip.textContent = `Decision: ${data.decisionLabel || data.decision}`;
+    chipWrap.appendChild(decChip);
+
+    const dirChip = document.createElement("div");
+    dirChip.className = "chip";
+    dirChip.textContent = `Direction: ${data.directionLabel || data.direction}`;
+    chipWrap.appendChild(dirChip);
+
+    const roleChip = document.createElement("div");
+    roleChip.className = "chip";
+    roleChip.textContent = `Role: ${data.roleLabel || data.strategicRole}`;
+    chipWrap.appendChild(roleChip);
+  }
+
+  function scoreTableSingle(data){
+    const rows = [
+      ["Customer Need & Insight", data.customer],
+      ["Operational Fit", data.operational],
+      ["Food Quality & Digestibility", data.quality],
+      ["Resource Impact", data.resource],
+      ["Commercial Strength", data.commercial],
+      ["Brand Gate", brandGateLabel(data.brandGate)],
+      ["Decision", decisionLabel(data.decision)],
+      ["Strategic role", roleLabel(data.strategicRole)],
+      ["Direction of travel", directionLabel(data.direction)]
+    ];
+
+    return `
+      <ul>
+        ${rows.map(r => `<li><strong>${r[0]}:</strong> ${r[1]}</li>`).join("")}
+      </ul>
+    `;
+  }
+
+  function notesOutputSingle(data){
+    const cond = (data.conditions || "").trim();
+    const notes = (data.notes || "").trim();
+    const typeTxt = byId("productType").options[byId("productType").selectedIndex].text;
+
+    return `
+      <p><strong>Product type:</strong> ${typeTxt}</p>
+      <p><strong>Strategic role:</strong> ${roleLabel(data.strategicRole)} • <strong>Decision:</strong> ${decisionLabel(data.decision)} • <strong>Direction:</strong> ${directionLabel(data.direction)}</p>
+      ${data.processNotes ? `<p><strong>Process notes:</strong> ${escapeHtml(data.processNotes)}</p>` : `<p><strong>Process notes:</strong> None recorded.</p>`}
+      ${(data.ingredients||" ").trim() ? `<p><strong>Ingredients (at time of review):</strong><br>${escapeHtml(data.ingredients).replace(/\n/g,"<br>")}</p>` : `<p><strong>Ingredients (at time of review):</strong> None recorded.</p>`}
+      ${cond ? `<p><strong>Conditions / required changes:</strong><br>${escapeHtml(cond).replace(/\n/g,"<br>")}</p>` : `<p><strong>Conditions / required changes:</strong> None recorded.</p>`}
+      ${notes ? `<p><strong>Notes:</strong><br>${escapeHtml(notes).replace(/\n/g,"<br>")}</p>` : `<p><strong>Notes:</strong> None recorded.</p>`}
+    `;
+  }
+
+  function escapeHtml(str){
+    return str.replace(/[&<>"']/g, (m) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[m]));
+  }
+
+  // ---------- Insights logic ----------
+  function getSingleData(){
+    return {
+      productType: byId("productType").value,
+      productName: byId("productName").value.trim(),
+      strategicRole: byId("strategicRole") ? byId("strategicRole").value : "core",
+      decision: byId("decision") ? byId("decision").value : "proceed",
+      direction: byId("direction") ? byId("direction").value : "stable",
+      ingredients: byId("ingredients") ? byId("ingredients").value : "",
+      processNotes: byId("processNotes") ? byId("processNotes").value.trim() : "",
+      showBenchmark: byId("showBenchmark") ? byId("showBenchmark").checked : false,
+      benchmarkName: byId("benchmarkName") ? byId("benchmarkName").value.trim() : "Best of Hobbs House Bakery",
+      bmkCustomer: byId("bmkCustomer") ? +byId("bmkCustomer").value : 5,
+      bmkOperational: byId("bmkOperational") ? +byId("bmkOperational").value : 5,
+      bmkQuality: byId("bmkQuality") ? +byId("bmkQuality").value : 5,
+      bmkResource: byId("bmkResource") ? +byId("bmkResource").value : 5,
+      bmkCommercial: byId("bmkCommercial") ? +byId("bmkCommercial").value : 5,
+      customer: +byId("sCustomer").value,
+      operational: +byId("sOperational").value,
+      quality: +byId("sQuality").value,
+      resource: +byId("sResource").value,
+      commercial: +byId("sCommercial").value,
+      brandGate: byId("brandGate").value,
+      conditions: byId("conditions").value,
+      notes: byId("notes").value
+    };
+  }
+
+  function summarySingle(data){
+    const scores = [
+      { name:"Customer need", val:data.customer },
+      { name:"Operational fit", val:data.operational },
+      { name:"Food quality/digestibility", val:data.quality },
+      { name:"Resource impact", val:data.resource },
+      { name:"Commercial strength", val:data.commercial }
+    ];
+    const strong = scores.filter(s => s.val >= 4);
+    const weak = scores.filter(s => s.val <= 2);
+    const productLabel = data.productName ? `“${escapeHtml(data.productName)}”` : "This product";
+
+    let lines = [];
+
+    // Decision context
+    data.decisionLabel = decisionLabel(data.decision);
+    data.directionLabel = directionLabel(data.direction);
+    data.roleLabel = roleLabel(data.strategicRole);
+
+    lines.push(`<p><strong>Decision:</strong> ${data.decisionLabel} • <strong>Strategic role:</strong> ${data.roleLabel} • <strong>Direction:</strong> ${data.directionLabel}</p>`);
+
+    if(data.brandGate === "no"){
+      lines.push(`<p><strong>${productLabel}</strong> fails the Brand Gate right now. Treat this as a re-work / repositioning job before we go further.</p>`);
+    } else if(data.brandGate === "conditions"){
+      lines.push(`<p><strong>${productLabel}</strong> is broadly on track, but there are conditions to fix before we’d stand behind it confidently.</p>`);
+    } else {
+      lines.push(`<p><strong>${productLabel}</strong> clears the Brand Gate. The main question is whether the trade-offs are right for the customer and the business.</p>`);
+    }
+
+    if(strong.length){
+      lines.push(`<p><strong>Key strengths:</strong> ${strong.map(s => s.name).join(", ")}.</p>`);
+    } else {
+      lines.push(`<p><strong>No clear spikes</strong> yet — this looks balanced but not distinctive. That’s fine for some products, but it may not be memorable.</p>`);
+    }
+
+    if(weak.length){
+      lines.push(`<p><strong>Key gaps:</strong> ${weak.map(s => s.name).join(", ")}. These are your most likely levers.</p>`);
+    } else {
+      lines.push(`<p><strong>No major red flags</strong> (nothing scoring 1–2). Improvements can be incremental rather than urgent.</p>`);
+    }
+
+    if(weak.length >= 3){
+      lines.push(`<p><strong>Rule check:</strong> This is weak in ${weak.length} areas. Only proceed if we can clearly explain why, and what we’ll do to improve it over time.</p>`);
+    }
+
+    // Product-type context
+    const g = typeGuidance[data.productType] || typeGuidance.other;
+    lines.push(`<p><strong>Type context:</strong> ${g.focus}</p>`);
+
+    lines.push(`<p><strong>Useful reminder:</strong> Not every product needs to be strong in every area. What matters is that the trade-offs are conscious, and directionally we’re moving the right way.</p>`);
+
+    return lines.join("");
+  }
+
+  function actionListSingle(data){
+    const actions = [];
+    const weak = (v) => v <= 2;
+
+    // Decision first
+    if(data.decision === "park"){
+      actions.push("Park it for now: capture what would need to change for this to become viable, and what signal would trigger a revisit.");
+    }
+    if(data.decision === "rework"){
+      actions.push("Rework brief: agree the one or two changes that would most improve this product without changing what it’s meant to do.");
+    }
+    if(data.decision === "proceed_conditions"){
+      actions.push("Proceed with conditions: write the conditions clearly and assign owners + dates before we scale this up.");
+    }
+
+    // Brand Gate first
+    if(data.brandGate === "no"){
+      actions.push("Agree what would make us proud of it (ingredients, process, story, or customer fit). If that can’t be achieved, treat it as a conscious exception and name it as such.");
+    } else if(data.brandGate === "conditions"){
+      actions.push("Write the conditions clearly (one line each) and assign owners + deadlines. Keep it specific: ‘swap X’, ‘add Y ferment’, ‘remove Z’, ‘change pack format’.");
+    }
+
+    // Lens nudges
+    if(weak(data.customer)) actions.push("Strengthen the brief: who is it for, what problem does it solve, and what does success look like (taste / performance / price / shelf life)?");
+    if(weak(data.operational)) actions.push("Make it more repeatable: simplify method, reduce fragility, or adjust timings so it fits the bakery rhythm.");
+    if(weak(data.quality)) actions.push("Find a ‘better not different’ improvement: longer fermentation, cleaner fat choice, modest wholegrain uplift, or remove unnecessary additives (without breaking the product’s role).");
+    if(weak(data.resource)) actions.push("Reduce waste and packaging impact: improve shelf life, change pack format, or simplify materials. Focus on what we can directly control.");
+    if(weak(data.commercial)) actions.push("Rebuild the commercial case: margin vs effort. Either re-price, simplify spec, or agree it’s a strategic product with a deliberate trade-off.");
+
+    // If nothing weak, suggest one improvement
+    const anyWeak = weak(data.customer)||weak(data.operational)||weak(data.quality)||weak(data.resource)||weak(data.commercial);
+    if(!anyWeak) actions.push("This is in decent shape. Choose one directional improvement (only one) to make it stronger over time.");
+
+    // Product-type extras
+    const g = typeGuidance[data.productType] || typeGuidance.other;
+    g.extra.forEach(x => actions.push(x));
+
+    return `<ul>${actions.map(a => `<li>${escapeHtml(a)}</li>`).join("")}</ul>`;
+  }
+
+  // ---------- Compare mode ----------
+  function getCompareData(){
+    return {
+      productType: byId("productType").value,
+      a: {
+        name: byId("nameA").value.trim(),
+        customer: +byId("aCustomer").value,
+        operational: +byId("aOperational").value,
+        quality: +byId("aQuality").value,
+        resource: +byId("aResource").value,
+        commercial: +byId("aCommercial").value,
+        brandGate: byId("aBrand").value,
+        notes: byId("aNotes").value
+      },
+      b: {
+        name: byId("nameB").value.trim(),
+        customer: +byId("bCustomer").value,
+        operational: +byId("bOperational").value,
+        quality: +byId("bQuality").value,
+        resource: +byId("bResource").value,
+        commercial: +byId("bCommercial").value,
+        brandGate: byId("bBrand").value,
+        notes: byId("bNotes").value
+      }
+    };
+  }
+
+  function compareSummaryBlock(label, d){
+    const scores = [
+      ["Customer need", d.customer],
+      ["Operational fit", d.operational],
+      ["Quality/digestibility", d.quality],
+      ["Resource impact", d.resource],
+      ["Commercial strength", d.commercial]
+    ];
+    const strong = scores.filter(s => s[1] >= 4).map(s => s[0]);
+    const weak = scores.filter(s => s[1] <= 2).map(s => s[0]);
+    const name = d.name ? escapeHtml(d.name) : label;
+
+    return `
+      <div class="card" style="box-shadow:none; background: rgba(0,0,0,.12); border:1px solid rgba(255,255,255,.10)">
+        <div class="miniTitle">${name}</div>
+        <p><strong>Brand Gate:</strong> ${brandGateLabel(d.brandGate)}</p>
+        ${strong.length ? `<p><strong>Strengths:</strong> ${strong.join(", ")}.</p>` : `<p><strong>Strengths:</strong> none obvious yet.</p>`}
+        ${weak.length ? `<p><strong>Gaps:</strong> ${weak.join(", ")}.</p>` : `<p><strong>Gaps:</strong> no major red flags.</p>`}
+        ${d.notes.trim() ? `<p><strong>Notes:</strong><br>${escapeHtml(d.notes).replace(/\n/g,"<br>")}</p>` : ``}
+      </div>
+    `;
+  }
+
+  function compareActions(a,b,productType){
+    // Simple comparison narrative: which is directionally better and why
+    const dims = [
+      ["Customer Need & Insight","customer"],
+      ["Operational Fit","operational"],
+      ["Food Quality & Digestibility","quality"],
+      ["Resource Impact","resource"],
+      ["Commercial Strength","commercial"]
+    ];
+
+    const winsA = [], winsB = [], ties = [];
+    dims.forEach(([name,key]) => {
+      if(a[key] > b[key]) winsA.push(name);
+      else if(b[key] > a[key]) winsB.push(name);
+      else ties.push(name);
+    });
+
+    const g = typeGuidance[productType] || typeGuidance.other;
+
+    const recs = [];
+    if(a.brandGate === "no" && b.brandGate !== "no"){
+      recs.push("Product A fails the Brand Gate. Unless there’s a strong reason, prioritise B or rework A first.");
+    } else if(b.brandGate === "no" && a.brandGate !== "no"){
+      recs.push("Product B fails the Brand Gate. Unless there’s a strong reason, prioritise A or rework B first.");
+    }
+
+    if(winsA.length || winsB.length){
+      recs.push(`Where they differ: ${winsA.length ? `A is stronger on ${winsA.join(", ")}` : ""}${winsA.length && winsB.length ? " / " : ""}${winsB.length ? `B is stronger on ${winsB.join(", ")}` : ""}.`);
+    }
+    if(ties.length) recs.push(`Similar on: ${ties.join(", ")}.`);
+
+    recs.push(g.focus);
+
+    // Suggest a sensible “next move”
+    recs.push("If this is a recipe change decision, keep the product’s job the same and improve one thing at a time (so we know what actually made it better).");
+
+    return `<ul>${recs.map(x => `<li>${escapeHtml(x)}</li>`).join("")}</ul>`;
+  }
+
+  // ---------- Render ----------
+  function renderSingle(){
+    const data = getSingleData();
+    buildChartSingle(data);
+    renderChipsSingle(data);
+
+    byId("summary").innerHTML = summarySingle(data);
+    byId("actions").innerHTML = actionListSingle(data);
+    byId("scoreTable").innerHTML = scoreTableSingle(data);
+    byId("notesOut").innerHTML = notesOutputSingle(data);
+  }
+
+  function renderCompare(){
+    const data = getCompareData();
+    buildChartCompare(data.a, data.b);
+
+    // chips in compare: keep simple
+    byId("chips").innerHTML = `
+      <div class="chip warn">Mode: Compare</div>
+      <div class="chip">Type: ${byId("productType").options[byId("productType").selectedIndex].text}</div>
+    `;
+
+    byId("summary").innerHTML = `
+      <div class="twoCol">
+        ${compareSummaryBlock("Product A", data.a)}
+        ${compareSummaryBlock("Product B", data.b)}
+      </div>
+    `;
+
+    byId("actions").innerHTML = compareActions(data.a, data.b, data.productType);
+
+    byId("scoreTable").innerHTML = `
+      <div class="twoCol">
+        <div>${scoreTableSingle({customer:data.a.customer, operational:data.a.operational, quality:data.a.quality, resource:data.a.resource, commercial:data.a.commercial, brandGate:data.a.brandGate})}</div>
+        <div>${scoreTableSingle({customer:data.b.customer, operational:data.b.operational, quality:data.b.quality, resource:data.b.resource, commercial:data.b.commercial, brandGate:data.b.brandGate})}</div>
+      </div>
+    `;
+
+    const typeTxt = byId("productType").options[byId("productType").selectedIndex].text;
+    byId("notesOut").innerHTML = `
+      <p><strong>Product type:</strong> ${typeTxt}</p>
+      <p><strong>Strategic role:</strong> ${roleLabel(data.strategicRole)} • <strong>Decision:</strong> ${decisionLabel(data.decision)} • <strong>Direction:</strong> ${directionLabel(data.direction)}</p>
+      ${data.processNotes ? `<p><strong>Process notes:</strong> ${escapeHtml(data.processNotes)}</p>` : `<p><strong>Process notes:</strong> None recorded.</p>`}
+      ${(data.ingredients||" ").trim() ? `<p><strong>Ingredients (at time of review):</strong><br>${escapeHtml(data.ingredients).replace(/\n/g,"<br>")}</p>` : `<p><strong>Ingredients (at time of review):</strong> None recorded.</p>`}
+      <p><strong>Notes A:</strong><br>${escapeHtml(data.a.notes||"").replace(/\n/g,"<br>") || "None"}</p>
+      <p><strong>Notes B:</strong><br>${escapeHtml(data.b.notes||"").replace(/\n/g,"<br>") || "None"}</p>
+    `;
+  }
+
+  // ---------- Mode switching ----------
+  const tabSingle = byId("tabSingle");
+  const tabCompare = byId("tabCompare");
+  const singleInputs = byId("singleInputs");
+  const compareInputs = byId("compareInputs");
+
+  let mode = "single";
+
+  function setMode(next){
+    mode = next;
+    const isSingle = mode === "single";
+    tabSingle.classList.toggle("active", isSingle);
+    tabCompare.classList.toggle("active", !isSingle);
+    tabSingle.setAttribute("aria-selected", isSingle);
+    tabCompare.setAttribute("aria-selected", !isSingle);
+
+    singleInputs.classList.toggle("hidden", !isSingle);
+    compareInputs.classList.toggle("hidden", isSingle);
+
+    // Render the current mode output
+    if(isSingle) renderSingle();
+    else renderCompare();
+  }
+
+  tabSingle.addEventListener("click", () => setMode("single"));
+  tabCompare.addEventListener("click", () => setMode("compare"));
+
+  // ---------- Buttons ----------
+  byId("btnGenerate").addEventListener("click", renderSingle);
+  byId("btnReset").addEventListener("click", () => {
+    byId("productType").value = "retail_loaf";
+    byId("productName").value = "";
+    byId("strategicRole").value = "core";
+    byId("decision").value = "proceed";
+    byId("direction").value = "stable";
+    byId("ingredients").value = "";
+    byId("processNotes").value = "";
+    if(byId("showBenchmark")) byId("showBenchmark").checked = false;
+    if(byId("benchmarkFields")) byId("benchmarkFields").classList.add("hidden");
+    if(byId("benchmarkName")) byId("benchmarkName").value = "Best of Hobbs House Bakery";
+    if(byId("bmkCustomer")){ byId("bmkCustomer").value = 5; byId("vbmkCustomer").textContent = 5; }
+    if(byId("bmkOperational")){ byId("bmkOperational").value = 5; byId("vbmkOperational").textContent = 5; }
+    if(byId("bmkQuality")){ byId("bmkQuality").value = 5; byId("vbmkQuality").textContent = 5; }
+    if(byId("bmkResource")){ byId("bmkResource").value = 5; byId("vbmkResource").textContent = 5; }
+    if(byId("bmkCommercial")){ byId("bmkCommercial").value = 5; byId("vbmkCommercial").textContent = 5; }
+
+    byId("sCustomer").value = 3; byId("vCustomer").textContent = 3;
+    byId("sOperational").value = 3; byId("vOperational").textContent = 3;
+    byId("sQuality").value = 3; byId("vQuality").textContent = 3;
+    byId("sResource").value = 3; byId("vResource").textContent = 3;
+    byId("sCommercial").value = 3; byId("vCommercial").textContent = 3;
+    byId("brandGate").value = "yes";
+    byId("conditions").value = "";
+    byId("notes").value = "";
+    renderSingle();
+  });
+
+  byId("btnGenerateCompare").addEventListener("click", renderCompare);
+  byId("btnResetCompare").addEventListener("click", () => {
+    byId("productType").value = "hospitality_bun";
+    ["nameA","nameB","aNotes","bNotes"].forEach(id => byId(id).value = "");
+    ["aCustomer","aOperational","aQuality","aResource","aCommercial","bCustomer","bOperational","bQuality","bResource","bCommercial"].forEach(id => byId(id).value = 3);
+    ["vaCustomer","vaOperational","vaQuality","vaResource","vaCommercial","vbCustomer","vbOperational","vbQuality","vbResource","vbCommercial"].forEach(id => byId(id).textContent = 3);
+    byId("aBrand").value = "yes";
+    byId("bBrand").value = "yes";
+    renderCompare();
+  });
+
+  // Re-render when product type changes
+  byId("productType").addEventListener("change", () => {
+    if(mode === "single") renderSingle();
+    else renderCompare();
+  });
+
+  // ---------- Save/Load (LocalStorage) ----------
+  const LS_KEY = "hhb_product_balance_v1";
+
+  function currentState(){
+    if(mode === "single") return { mode, ...getSingleData() };
+    const c = getCompareData();
+    return { mode, ...c };
+  }
+
+  function applyState(state){
+    if(!state || !state.mode) return;
+
+    // Mode
+    setMode(state.mode);
+
+    byId("productType").value = state.productType || "retail_loaf";
+
+    if(state.mode === "single"){
+      byId("productName").value = state.productName || "";
+      if(byId("strategicRole")) byId("strategicRole").value = state.strategicRole || "core";
+      if(byId("decision")) byId("decision").value = state.decision || "proceed";
+      if(byId("direction")) byId("direction").value = state.direction || "stable";
+      if(byId("ingredients")) byId("ingredients").value = state.ingredients || "";
+      if(byId("processNotes")) byId("processNotes").value = state.processNotes || "";
+      if(byId("showBenchmark")) byId("showBenchmark").checked = !!state.showBenchmark;
+      if(byId("benchmarkName")) byId("benchmarkName").value = state.benchmarkName || "Best of Hobbs House Bakery";
+      if(byId("bmkCustomer")){ byId("bmkCustomer").value = state.bmkCustomer ?? 5; byId("vbmkCustomer").textContent = byId("bmkCustomer").value; }
+      if(byId("bmkOperational")){ byId("bmkOperational").value = state.bmkOperational ?? 5; byId("vbmkOperational").textContent = byId("bmkOperational").value; }
+      if(byId("bmkQuality")){ byId("bmkQuality").value = state.bmkQuality ?? 5; byId("vbmkQuality").textContent = byId("bmkQuality").value; }
+      if(byId("bmkResource")){ byId("bmkResource").value = state.bmkResource ?? 5; byId("vbmkResource").textContent = byId("bmkResource").value; }
+      if(byId("bmkCommercial")){ byId("bmkCommercial").value = state.bmkCommercial ?? 5; byId("vbmkCommercial").textContent = byId("bmkCommercial").value; }
+      syncBenchmarkVisibility();
+      byId("sCustomer").value = state.customer ?? 3; byId("vCustomer").textContent = byId("sCustomer").value;
+      byId("sOperational").value = state.operational ?? 3; byId("vOperational").textContent = byId("sOperational").value;
+      byId("sQuality").value = state.quality ?? 3; byId("vQuality").textContent = byId("sQuality").value;
+      byId("sResource").value = state.resource ?? 3; byId("vResource").textContent = byId("sResource").value;
+      byId("sCommercial").value = state.commercial ?? 3; byId("vCommercial").textContent = byId("sCommercial").value;
+      byId("brandGate").value = state.brandGate || "yes";
+      byId("conditions").value = state.conditions || "";
+      byId("notes").value = state.notes || "";
+      renderSingle();
+    } else {
+      // compare
+      const a = state.a || {};
+      const b = state.b || {};
+      byId("nameA").value = a.name || "";
+      byId("nameB").value = b.name || "";
+      byId("aCustomer").value = a.customer ?? 3; byId("vaCustomer").textContent = byId("aCustomer").value;
+      byId("aOperational").value = a.operational ?? 3; byId("vaOperational").textContent = byId("aOperational").value;
+      byId("aQuality").value = a.quality ?? 3; byId("vaQuality").textContent = byId("aQuality").value;
+      byId("aResource").value = a.resource ?? 3; byId("vaResource").textContent = byId("aResource").value;
+      byId("aCommercial").value = a.commercial ?? 3; byId("vaCommercial").textContent = byId("aCommercial").value;
+      byId("aBrand").value = a.brandGate || "yes";
+      byId("aNotes").value = a.notes || "";
+
+      byId("bCustomer").value = b.customer ?? 3; byId("vbCustomer").textContent = byId("bCustomer").value;
+      byId("bOperational").value = b.operational ?? 3; byId("vbOperational").textContent = byId("bOperational").value;
+      byId("bQuality").value = b.quality ?? 3; byId("vbQuality").textContent = byId("bQuality").value;
+      byId("bResource").value = b.resource ?? 3; byId("vbResource").textContent = byId("bResource").value;
+      byId("bCommercial").value = b.commercial ?? 3; byId("vbCommercial").textContent = byId("bCommercial").value;
+      byId("bBrand").value = b.brandGate || "yes";
+      byId("bNotes").value = b.notes || "";
+
+      renderCompare();
+    }
+  }
+
+  byId("btnSaveLocal").addEventListener("click", () => {
+    localStorage.setItem(LS_KEY, JSON.stringify(currentState()));
+    alert("Saved.");
+  });
+
+  byId("btnLoadLocal").addEventListener("click", () => {
+    const raw = localStorage.getItem(LS_KEY);
+    if(!raw) return alert("Nothing saved yet.");
+    applyState(JSON.parse(raw));
+    alert("Loaded.");
+  });
+
+  // ---------- Export / Import JSON ----------
+  byId("btnExportJSON").addEventListener("click", () => {
+    const blob = new Blob([JSON.stringify(currentState(), null, 2)], { type:"application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `hhb-product-balance-${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  byId("btnImportJSON").addEventListener("click", () => byId("jsonFile").click());
+  byId("jsonFile").addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if(!file) return;
+    const text = await file.text();
+    try{
+      const state = JSON.parse(text);
+      applyState(state);
+      alert("Imported.");
+    }catch(err){
+      alert("Could not import that JSON file.");
+    }finally{
+      e.target.value = "";
+    }
+  });
+
+  // ---------- Export PNG / PDF ----------
+  byId("btnPNG").addEventListener("click", async () => {
+    const el = byId("exportArea");
+    const canvas = await html2canvas(el, { backgroundColor: null, scale: 2 });
+    const link = document.createElement("a");
+    link.download = `hhb-product-balance-${new Date().toISOString().slice(0,10)}.png`;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  });
+
+  byId("btnPDF").addEventListener("click", async () => {
+    // Capture a clean report: chart + summary + actions + scores + notes
+    const report = document.createElement("div");
+    report.style.padding = "18px";
+    report.style.width = "900px";
+    report.style.fontFamily = "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
+    report.style.color = "#111";
+    report.style.background = "#fff";
+
+    const typeTxt = byId("productType").options[byId("productType").selectedIndex].text;
+    const title = (mode === "single")
+      ? (byId("productName").value.trim() || "Product profile")
+      : "Product comparison";
+
+    report.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:12px;">
+        <div>
+          <div style="font-weight:800; font-size:18px;">Hobbs House Bakery – Product Balance Framework</div>
+          <div style="margin-top:4px; font-size:13px; color:#444;"><strong>${escapeHtml(title)}</strong> • ${escapeHtml(typeTxt)} • ${new Date().toLocaleDateString("en-GB")}</div>
+        </div>
+        <div style="width:46px; height:46px; border-radius:12px; background: linear-gradient(135deg, #f26a21, #ff8a3d, #ffb27a);"></div>
+      </div>
+      <hr style="border:0; border-top:1px solid #ddd; margin:12px 0 14px;">
+      <div id="pdfChart" style="margin: 0 0 12px 0;"></div>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:14px;">
+        <div>
+          <div style="font-weight:800; margin-bottom:6px;">What this tells us</div>
+          <div id="pdfSummary" style="font-size:12.5px; color:#333;"></div>
+        </div>
+        <div>
+          <div style="font-weight:800; margin-bottom:6px;">Suggested next steps</div>
+          <div id="pdfActions" style="font-size:12.5px; color:#333;"></div>
+        </div>
+      </div>
+      <hr style="border:0; border-top:1px solid #ddd; margin:12px 0 10px;">
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:14px;">
+        <div>
+          <div style="font-weight:800; margin-bottom:6px;">Scores</div>
+          <div id="pdfScores" style="font-size:12.5px; color:#333;"></div>
+        </div>
+        <div>
+          <div style="font-weight:800; margin-bottom:6px;">Notes</div>
+          <div id="pdfNotes" style="font-size:12.5px; color:#333;"></div>
+        </div>
+      </div>
+    `;
+
+    // Clone chart area as an image
+    const exportCanvas = await html2canvas(byId("exportArea"), { backgroundColor: "#ffffff", scale: 2 });
+    const imgData = exportCanvas.toDataURL("image/png");
+    const img = document.createElement("img");
+    img.src = imgData;
+    img.style.width = "100%";
+    img.style.border = "1px solid #eee";
+    img.style.borderRadius = "10px";
+    report.querySelector("#pdfChart").appendChild(img);
+
+    // Put text blocks in
+    report.querySelector("#pdfSummary").innerHTML = byId("summary").innerHTML;
+    report.querySelector("#pdfActions").innerHTML = byId("actions").innerHTML;
+    report.querySelector("#pdfScores").innerHTML = byId("scoreTable").innerHTML;
+    report.querySelector("#pdfNotes").innerHTML = byId("notesOut").innerHTML;
+
+    // Render report into PDF
+    document.body.appendChild(report);
+    const canvas = await html2canvas(report, { backgroundColor: "#ffffff", scale: 2 });
+    document.body.removeChild(report);
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation:"p", unit:"pt", format:"a4" });
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+
+    const imgW = pageWidth;
+    const imgH = canvas.height * (imgW / canvas.width);
+
+    let y = 0;
+    let remaining = imgH;
+
+    const imgPDF = canvas.toDataURL("image/png");
+
+    while(remaining > 0){
+      pdf.addImage(imgPDF, "PNG", 0, y, imgW, imgH);
+      remaining -= pageHeight;
+      if(remaining > 0){
+        pdf.addPage();
+        y -= pageHeight;
+      }
+    }
+
+    pdf.save(`hhb-product-balance-${new Date().toISOString().slice(0,10)}.pdf`);
+  });
+
+  // ---------- Initial render ----------
+  function init(){
+    const missing = depsOk();
+    if(missing.length) showDepError(missing);
+    setMode("single");
+    // Only attempt first render if Chart exists
+    if(typeof Chart !== "undefined") renderSingle();
+  }
+  init();
+</script>
+</body>
+</html>
